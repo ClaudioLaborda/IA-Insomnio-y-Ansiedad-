@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Integrantes
  * Claudio Laborda - claborda@frsf.utn.edu.ar
- * 
+ * Cristian Nozralah - cnozralah@frsf.utn.edu.ar
  * 
  */
 @SpringBootApplication
