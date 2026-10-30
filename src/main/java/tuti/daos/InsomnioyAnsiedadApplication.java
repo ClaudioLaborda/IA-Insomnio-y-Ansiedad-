@@ -5,11 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Integrantes
  * Claudio Laborda - claborda@frsf.utn.edu.ar
-<<<<<<< HEAD:src/main/java/tuti/desi/InsomnioyAnsiedadApplication.java
- * Cristian Nozralah - cnozralah@frsf.utn.edu.ar -
-=======
  * Cristian Nozralah - cnozralah@frsf.utn.edu.ar
->>>>>>> master:src/main/java/tuti/daos/InsomnioyAnsiedadApplication.java
  * 
  */
 @SpringBootApplication
