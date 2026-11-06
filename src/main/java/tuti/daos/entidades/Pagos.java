@@ -1,5 +1,7 @@
 package tuti.daos.entidades;
 
+// Pagos mantiene la plantilla y todos los datos necesarios para los obj "Pagos"
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
