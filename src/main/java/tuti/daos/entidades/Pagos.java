@@ -11,16 +11,17 @@ import jakarta.persistence.*;
 import tuti.daos.enums.MediosPagos;
 
 
+
 @Entity
-@Table(name = "pago", uniqueConstraints = @UniqueConstraint(name = "uk_pago_factura", columnNames = "factura_id"))
+@Table(name = "pago" , uniqueConstraints = @UniqueConstraint(name = "uk_pago_factura", columnNames = "factura_id"))
 public class Pagos {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long ID;
+	private Long Id;
 	
-	/*
+	
 	@Column(name = "factura_id", nullable = false)
-	private Factura factura;
-	*/
+    private Long facturaId;
+	
 	
 	@Column (nullable = false)
 	private LocalDate fechaPago;
@@ -41,15 +42,15 @@ public class Pagos {
 	
 	// Setters
 	
-	public void setID(Long iD) {
-		ID = iD;
+	public void setID(Long Id) {
+		Id = Id;
 	}
 
-	/*
-	public void setFactura(Factura factura) {
-		this.factura = factura;
+	
+	public void setFactura(Long factura) {
+		this.facturaId = factura;
 	}
-	*/
+	
 
 	public void setFechaPago(LocalDate fechaPago) {
 		this.fechaPago = fechaPago;
@@ -74,14 +75,14 @@ public class Pagos {
 	
 	// Getters
 	public Long getID() {
-		return ID;
+		return Id;
 	}
 
-	/*
-	public Factura getFactura() {
-		return factura;
+	
+	public Long getFactura() {
+		return facturaId;
 	}
-	*/
+	
 	
 	public LocalDate getFechaPago() {
 		return fechaPago;
