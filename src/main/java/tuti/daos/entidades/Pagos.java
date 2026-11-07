@@ -44,13 +44,10 @@ public class Pagos {
 	
 	// Setters
 	
-	public void setID(Long Id) {
-		Id = Id;
-	}
 
 	
-	public void setFactura(Long factura) {
-		this.facturaId = factura;
+	public void setFacturaId(Long facturaId) {
+		this.facturaId = facturaId;
 	}
 	
 
@@ -76,12 +73,12 @@ public class Pagos {
 	
 	
 	// Getters
-	public Long getID() {
+	public Long getId() {
 		return Id;
 	}
 
 	
-	public Long getFactura() {
+	public Long getFacturaId() {
 		return facturaId;
 	}
 	
