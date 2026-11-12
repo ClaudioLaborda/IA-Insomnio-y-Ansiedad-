@@ -2,14 +2,20 @@ package tuti.daos.presentacion;
 
 import java.math.BigDecimal;
 import tuti.daos.entidades.InformeResolucion;
+import jakarta.validation.constraints.*;
 
 public class InformeResolucionRequest {
+    @NotNull
     private Long incidenteId; 
+    @NotBlank
     private String descripcionTrabajo;
+    @NotNull
+    @Min(value = 0)
     private BigDecimal costo;
     private String proveedor;
+    @NotBlank
     private String responsableTecnico;
-    private String observaciones;
+    private String observaciones; 
 
     public InformeResolucion toEntity() {
         InformeResolucion informe = new InformeResolucion();

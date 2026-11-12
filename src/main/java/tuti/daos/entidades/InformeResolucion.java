@@ -3,6 +3,7 @@ package tuti.daos.entidades;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // <-- 1. Importa esto
 
 @Entity
 @Table(name = "informe_resolucion")
@@ -13,6 +14,7 @@ public class InformeResolucion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "incidente_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
     private Incidente incidente;
 
     @Column(name = "descripcion_trabajo", nullable = false, columnDefinition = "TEXT")

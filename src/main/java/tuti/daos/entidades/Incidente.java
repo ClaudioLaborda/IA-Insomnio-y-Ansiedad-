@@ -1,9 +1,11 @@
 package tuti.daos.entidades;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // <-- ¡Faltaba este import!
 
 @Entity
 @Table(name = "incidente")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Incidente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

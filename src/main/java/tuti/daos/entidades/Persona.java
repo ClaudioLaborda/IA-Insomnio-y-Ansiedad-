@@ -21,7 +21,6 @@ public class Persona {
     @Column(name = "datos_contacto", length = 255)
     private String datosContacto;
 
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNombre() { return nombre; }

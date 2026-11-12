@@ -1,5 +1,5 @@
 package tuti.daos.servicios;
-
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tuti.daos.entidades.InformeResolucion;
@@ -38,5 +38,14 @@ public class InformeResolucionService {
     
     public InformeResolucion buscarPorId(Long id) {
         return informeRepo.findById(id).orElse(null);
+    }
+    public List<InformeResolucion> listarInformes(Long incidenteId) {
+        if (incidenteId != null) {
+           
+            return informeRepo.findAll().stream()
+                .filter(info -> info.getIncidente().getId().equals(incidenteId))
+                .toList();
+        }
+        return informeRepo.findAll();
     }
 }

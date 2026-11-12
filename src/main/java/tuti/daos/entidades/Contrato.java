@@ -37,7 +37,6 @@ public class Contrato {
     @Column(name = "eliminado_logicamente", nullable = false)
     private Boolean eliminadoLogicamente = false;
 
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Persona getInquilino() { return inquilino; }
