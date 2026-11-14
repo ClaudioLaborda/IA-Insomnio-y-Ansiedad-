@@ -67,7 +67,7 @@ public class PagoRequest {
 	}
 
 	public void setInteres(BigDecimal interes) {
-		Interes = interes;
+		this.Interes = interes;
 	}
 
 	
