@@ -29,37 +29,40 @@ public class PagoService {
         this.facturaService = facturaService;
     }
 
+    // 409 Conflict - La soli no pudo concretarse
     
     
-    
-    @Transactional	// Se encarga del manejo de transacciones
-    public PagoResponse registrar(PagoRequest req) {
-        FacturaInfo factura = facturaService.obtener(req.getFacturaId());          // 404
+    @Transactional	// Se encarga del manejo de transacciones, hace que todo sea atomico
+    public PagoResponse registrar(PagoRequest req) {	// Se crea la funcion, req funciona como intermediario entre la 
+        FacturaInfo factura = facturaService.obtener(req.getFacturaId());          // 404 - Le pide al servicio 1 la factura correspondiente, si no la encuentra, devuelve 404
 
         
-        if (!factura.estado().equals("PENDIENTE") && !factura.estado().equals("VENCIDA")) {
-            throw new ConflictoNegocioException("La factura está " + factura.estado());   // 409
+        if (!factura.estado().equals("PENDIENTE") && !factura.estado().equals("VENCIDA")) {	// Si el estado de la factura es distinta a pendiente y distinta a vencia
+            throw new ConflictoNegocioException("La factura está " + factura.estado());   // 409 - Devuelve un 409, y el estado de la factura 
         }
         
-        if (pagoRepository.existsByFacturaId(factura.id())) {
-            throw new ConflictoNegocioException("La factura ya tiene un pago");           // 409
+        if (pagoRepository.existsByFacturaId(factura.id())) {	// Si la factura ya tiene un pago asociado, devuelve un 409 indicando que ya esta pago
+            throw new ConflictoNegocioException("La factura ya tiene un pago");           // 409 - Se comenta que no se pudo efectuar el pago por que ya esta realizado
         }
         
         
 
-        LocalDate fecha = req.getFechaPago() != null ? req.getFechaPago() : LocalDate.now();
-        if (fecha.isBefore(factura.fechaEmision()) || fecha.isAfter(LocalDate.now())) {
-            throw new DatosInvalidosException("Fecha de pago fuera de rango");            // 400
+        LocalDate fecha = req.getFechaPago() != null ? req.getFechaPago() : LocalDate.now();  // Si no se puede traer la fecha, se utiliza la de hoy
+        if (fecha.isBefore(factura.fechaEmision()) || fecha.isAfter(LocalDate.now())) {		// Si la fecha de pago es posterior o anterior, arroja un 400
+            throw new DatosInvalidosException("Fecha de pago fuera de rango");            // 400 (Bad Request) No se puede procesar la peticion por que las fechas no coninciden
         }
         
+        
+        // Si accede hasta aca es que todo llego bien. Caso contrario, terminaria el procedimientoa antes
+        
 
-        BigDecimal esperado = factura.importe().add(req.getInteres());
-        if (req.getImportePagado().compareTo(esperado) != 0) {
-            throw new ConflictoNegocioException("El importe pagado debe ser importe de la factura + interés");
+        BigDecimal impTotal = factura.importe().add(req.getInteres());	//Al importe de la factura se le añaden los intereses. 
+        if (req.getImportePagado().compareTo(impTotal) != 0) {		// Si el importe pagado - el total es distinto a 0, arroja un conflicto
+            throw new ConflictoNegocioException("El importe pagado debe ser importe de la factura + interés");	// Se devuelve el siguiente mensaje
         }
 
         
-        
+        // Se crea un obj con toda la información del pago
         Pagos pago = new Pagos();
         pago.setFacturaId(factura.id());
         pago.setFechaPago(fecha);
@@ -68,6 +71,7 @@ public class PagoService {
         pago.setInteres(req.getInteres());
 
         
+        // Se intenta guardar el pago 
         try {
             pago = pagoRepository.saveAndFlush(pago);       // flush: el UNIQUE se verifica acá
         } catch (DataIntegrityViolationException e) {

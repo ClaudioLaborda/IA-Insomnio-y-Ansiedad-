@@ -1,3 +1,5 @@
 package tuti.daos.enums;
 
-public enum MediosPagos {Transeferencia, Efectivo, Debido, Credito, Otro}
+public enum MediosPagos {
+    TRANSFERENCIA, EFECTIVO, DEBITO, CREDITO, OTROS
+}
