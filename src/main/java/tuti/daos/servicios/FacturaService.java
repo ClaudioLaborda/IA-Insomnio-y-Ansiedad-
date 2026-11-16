@@ -18,4 +18,6 @@ public interface FacturaService {
 
     FacturaResponseDto anularFactura(Long id);
     
+    void marcarComoPagada(Long id);
+    
 }

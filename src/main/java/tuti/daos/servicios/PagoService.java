@@ -6,8 +6,10 @@ import java.time.LocalDate;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import tuti.daos.accesoDatos.PagoRepository;
+import tuti.daos.dto.FacturaResponseDto;
 import tuti.daos.excepciones.*;
 import tuti.daos.presentacion.*;
 import tuti.daos.entidades.Pagos;
@@ -34,21 +36,21 @@ public class PagoService {
     
     @Transactional	// Se encarga del manejo de transacciones, hace que todo sea atomico
     public PagoResponse registrar(PagoRequest req) {	// Se crea la funcion, req funciona como intermediario entre la 
-        FacturaInfo factura = facturaService.obtener(req.getFacturaId());          // 404 - Le pide al servicio 1 la factura correspondiente, si no la encuentra, devuelve 404
+    	FacturaResponseDto factura = buscarFactura(req.getFacturaId());          // 404 - Le pide al servicio 1 la factura correspondiente, si no la encuentra, devuelve 404
 
         
-        if (!factura.estado().equals("PENDIENTE") && !factura.estado().equals("VENCIDA")) {	// Si el estado de la factura es distinta a pendiente y distinta a vencia
-            throw new ConflictoNegocioException("La factura está " + factura.estado());   // 409 - Devuelve un 409, y el estado de la factura 
+        if (!factura.getEstado().equals("PENDIENTE") && !factura.getEstado().equals("VENCIDA")) {	// Si el estado de la factura es distinta a pendiente y distinta a vencia
+            throw new ConflictoNegocioException("La factura está " + factura.getEstado());   // 409 - Devuelve un 409, y el estado de la factura 
         }
         
-        if (pagoRepository.existsByFacturaId(factura.id())) {	// Si la factura ya tiene un pago asociado, devuelve un 409 indicando que ya esta pago
+        if (pagoRepository.existsByFacturaId(factura.getId())) {	// Si la factura ya tiene un pago asociado, devuelve un 409 indicando que ya esta pago
             throw new ConflictoNegocioException("La factura ya tiene un pago");           // 409 - Se comenta que no se pudo efectuar el pago por que ya esta realizado
         }
         
         
 
         LocalDate fecha = req.getFechaPago() != null ? req.getFechaPago() : LocalDate.now();  // Si no se puede traer la fecha, se utiliza la de hoy
-        if (fecha.isBefore(factura.fechaEmision()) || fecha.isAfter(LocalDate.now())) {		// Si la fecha de pago es posterior o anterior, arroja un 400
+        if (fecha.isBefore(factura.getFechaEmision()) || fecha.isAfter(LocalDate.now())) {		// Si la fecha de pago es posterior o anterior, arroja un 400
             throw new DatosInvalidosException("Fecha de pago fuera de rango");            // 400 (Bad Request) No se puede procesar la peticion por que las fechas no coninciden
         }
         
@@ -56,7 +58,7 @@ public class PagoService {
         // Si accede hasta aca es que todo llego bien. Caso contrario, terminaria el procedimientoa antes
         
 
-        BigDecimal impTotal = factura.importe().add(req.getInteres());	//Al importe de la factura se le añaden los intereses. 
+        BigDecimal impTotal = factura.getImporte().add(req.getInteres());	//Al importe de la factura se le añaden los intereses. 
         if (req.getImportePagado().compareTo(impTotal) != 0) {		// Si el importe pagado - el total es distinto a 0, arroja un conflicto
             throw new ConflictoNegocioException("El importe pagado debe ser importe de la factura + interés");	// Se devuelve el siguiente mensaje
         }
@@ -64,7 +66,7 @@ public class PagoService {
         
         // Se crea un obj con toda la información del pago
         Pagos pago = new Pagos();
-        pago.setFacturaId(factura.id());
+        pago.setFacturaId(factura.getId());
         pago.setFechaPago(fecha);
         pago.setMedioPago(req.getMedioPago());
         pago.setImportePagado(req.getImportePagado());
@@ -78,7 +80,7 @@ public class PagoService {
             throw new ConflictoNegocioException("La factura ya tiene un pago");
         }
 
-        facturaService.marcarComoPagada(factura.id());      // dentro de la misma transacción
+        facturaService.marcarComoPagada(factura.getId());      // dentro de la misma transacción
         return toResponse(pago);
     }
 
@@ -94,6 +96,16 @@ public class PagoService {
                 ? pagoRepository.findAll()
                 : pagoRepository.findByFacturaId(facturaId).map(List::of).orElse(List.of());
         return pagos.stream().map(this::toResponse).toList();
+    }
+    
+    
+ // Consulta la factura en el servicio de S01. Su servicio lanza EntityNotFoundException, aca se traduce a nuestra excepcion para que devuelva 404
+    private FacturaResponseDto buscarFactura(Long id) {
+        try {
+            return facturaService.obtenerPorId(id);
+        } catch (EntityNotFoundException e) {
+            throw new RecursoNoEncontradoException("Factura inexistente");
+        }
     }
 
     private PagoResponse toResponse(Pagos p) {
