@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Incidentes - Inmobiliaria</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; max-width: 800px; }
+        .success { color: rgb(0, 0, 0); font-weight: bold; }
+        .error { color: rgb(0, 0, 0); font-weight: bold; }
+        .card { background: #f9f9f9; padding: 20px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; }
+        div { margin-bottom: 10px; }
+        label { display: inline-block; width: 120px; font-weight: bold; }
+        input, select, textarea { width: 300px; padding: 5px; }
+        button { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; max-height: 250px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h2>Gestión de Incidentes - Conexión y Altas</h2>
+    
+    <!-- Estado de Conexión-->
+    <div class="card">
+        <h3>Estado de la Conexión con Ser. y Base de Datos</h3>
+        <div id="estado-conexion">Verificando conexión...</div>
+    </div>
+
+    <!-- Formulario para Registrar Nuevo Incidente -->
+    <div class="card">
+        <h3>Registrar Nuevo Incidente</h3>
+        <form id="formIncidente">
+            <div>
+                <label for="contratoId">ID Contrato:</label>
+                <input type="number" id="contratoId" required value="1">
+            </div>
+            <div>
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" required placeholder="Ej: Fuga de agua">
+            </div>
+            <div>
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" required placeholder="Detalles del problema..."></textarea>
+            </div>
+            <div>
+                <label for="categoria">Categoría:</label>
+                <select id="categoria">
+                    <option value="PLOMERIA">PLOMERIA</option>
+                    <option value="ELECTRICIDAD">ELECTRICIDAD</option>
+                    <option value="GAS">GAS</option>
+                    <option value="GENERAL">GENERAL</option>
+                </select>
+            </div>
+            <div>
+                <label for="prioridad">Prioridad:</label>
+                <select id="prioridad">
+                    <option value="BAJA">BAJA</option>
+                    <option value="MEDIA">MEDIA</option>
+                    <option value="ALTA">ALTA</option>
+                </select>
+            </div>
+            <button type="submit">Guardar en Base de Datos</button>
+        </form>
+        <div id="mensaje-alta" style="margin-top: 10px;"></div>
+    </div>
+
+    <!-- Sección de Listado (Visualización de datos) -->
+    <div class="card">
+        <h3>Incidentes Actuales en la Base de Datos:</h3>
+        <button onclick="cargarIncidentes()">Actualizar Lista</button>
+        <pre id="resultado">Cargando registros...</pre>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8081/incidentes';
+
+        // 1. Función para consultar los incidentes (GET) y validar conexión
+        function cargarIncidentes() {
+            fetch(API_URL)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error al conectar con el serv: ' + response.status);
+                    }
+                })
+                .then(data => {
+                    // Si responde bien, actualiza el estado de conexión a verde
+                    document.getElementById('estado-conexion').innerHTML = 
+                        '<span class="success">Conexión exitosa con la Base de Datos </span>';
+                    
+                    // Muestra los registros en el bloque <pre>
+                    document.getElementById('resultado').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    // Si falla, avisa en rojo
+                    document.getElementById('estado-conexion').innerHTML = 
+                        '<span class="error">Falló la conexión o el servidor no responde.</span>';
+                    document.getElementById('resultado').textContent = error.message;
+                });
+        }
+
+        // 2. Manejar el envío del formulario para crear un registro (POST)
+        document.getElementById('formIncidente').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita el recargo de página clásico
+
+            const nuevoIncidente = {
+                contratoId: parseInt(document.getElementById('contratoId').value),
+                titulo: document.getElementById('titulo').value,
+                descripcion: document.getElementById('descripcion').value,
+                categoria: document.getElementById('categoria').value,
+                prioridad: document.getElementById('prioridad').value
+            };
+
+            fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(nuevoIncidente)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(err => { throw new Error(err.error || 'Error al registrar'); });
+                }
+            })
+            .then(data => {
+                document.getElementById('mensaje-alta').innerHTML = 
+                    '<span class="success">¡Incidente guardado con éxito! (ID asignado: ' + data.id + ')</span>';
+                document.getElementById('formIncidente').reset(); // Limpia los campos
+                cargarIncidentes(); // Refresca automáticamente la lista de abajo
+            })
+            .catch(error => {
+                document.getElementById('mensaje-alta').innerHTML = 
+                    '<span class="error">Error al registrar: ' + error.message + '</span>';
+            });
+        });
+
+        // Ejecutar al cargar la página por primera vez
+        cargarIncidentes();
+    </script>
+</body>
+</html>
