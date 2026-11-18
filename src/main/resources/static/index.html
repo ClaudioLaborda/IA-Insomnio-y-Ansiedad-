@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Incidentes - Inmobiliaria</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; max-width: 800px; }
-        .success { color: rgb(0, 0, 0); font-weight: bold; }
-        .error { color: rgb(0, 0, 0); font-weight: bold; }
+        body { font-family: Arial, sans-serif; margin: 30px; max-width: 900px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
         .card { background: #f9f9f9; padding: 20px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; }
         div { margin-bottom: 10px; }
-        label { display: inline-block; width: 120px; font-weight: bold; }
+        label { display: inline-block; width: 130px; font-weight: bold; }
         input, select, textarea { width: 300px; padding: 5px; }
         button { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background: #0056b3; }
@@ -18,11 +18,11 @@
     </style>
 </head>
 <body>
-    <h2>Gestión de Incidentes - Conexión y Altas</h2>
+    <h2>Gestión de Incidentes - Módulo Independiente</h2>
     
-    <!-- Estado de Conexión-->
+    <!-- Estado de Conexión -->
     <div class="card">
-        <h3>Estado de la Conexión con Ser. y Base de Datos</h3>
+        <h3>Estado de la Conexión con el Servidor y Base de Datos</h3>
         <div id="estado-conexion">Verificando conexión...</div>
     </div>
 
@@ -36,7 +36,7 @@
             </div>
             <div>
                 <label for="titulo">Título:</label>
-                <input type="text" id="titulo" required placeholder="Ej: Fuga de agua">
+                <input type="text" id="titulo" required placeholder="Ej: Fuga de agua en cocina">
             </div>
             <div>
                 <label for="descripcion">Descripción:</label>
@@ -64,6 +64,29 @@
         <div id="mensaje-alta" style="margin-top: 10px;"></div>
     </div>
 
+    <!-- Sección para Cambiar Estado de un Incidente -->
+    <div class="card">
+        <h3>Cambiar Estado de un Incidente</h3>
+        <form id="formCambiarEstado">
+            <div>
+                <label for="incidenteId">ID Incidente:</label>
+                <input type="number" id="incidenteId" required placeholder="Ej: 1">
+            </div>
+            <div>
+                <label for="nuevoEstado">Nuevo Estado:</label>
+                <select id="nuevoEstado">
+                    <option value="ABIERTO">ABIERTO</option>
+                    <option value="EN_PROCESO">EN_PROCESO</option>
+                    <option value="RESUELTO">RESUELTO</option>
+                    <option value="CANCELADO">CANCELADO</option>
+                    <option value="REABIERTO">REABIERTO</option>
+                </select>
+            </div>
+            <button type="submit">Actualizar Estado</button>
+        </form>
+        <div id="mensaje-estado" style="margin-top: 10px;"></div>
+    </div>
+
     <!-- Sección de Listado (Visualización de datos) -->
     <div class="card">
         <h3>Incidentes Actuales en la Base de Datos:</h3>
@@ -81,19 +104,15 @@
                     if (response.ok) {
                         return response.json();
                     } else {
-                        throw new Error('Error al conectar con el serv: ' + response.status);
+                        throw new Error('Error al conectar con el servidor: ' + response.status);
                     }
                 })
                 .then(data => {
-                    // Si responde bien, actualiza el estado de conexión a verde
                     document.getElementById('estado-conexion').innerHTML = 
                         '<span class="success">Conexión exitosa con la Base de Datos </span>';
-                    
-                    // Muestra los registros en el bloque <pre>
                     document.getElementById('resultado').textContent = JSON.stringify(data, null, 2);
                 })
                 .catch(error => {
-                    // Si falla, avisa en rojo
                     document.getElementById('estado-conexion').innerHTML = 
                         '<span class="error">Falló la conexión o el servidor no responde.</span>';
                     document.getElementById('resultado').textContent = error.message;
@@ -102,7 +121,7 @@
 
         // 2. Manejar el envío del formulario para crear un registro (POST)
         document.getElementById('formIncidente').addEventListener('submit', function(event) {
-            event.preventDefault(); // Evita el recargo de página clásico
+            event.preventDefault();
 
             const nuevoIncidente = {
                 contratoId: parseInt(document.getElementById('contratoId').value),
@@ -114,9 +133,7 @@
 
             fetch(API_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(nuevoIncidente)
             })
             .then(response => {
@@ -129,12 +146,44 @@
             .then(data => {
                 document.getElementById('mensaje-alta').innerHTML = 
                     '<span class="success">¡Incidente guardado con éxito! (ID asignado: ' + data.id + ')</span>';
-                document.getElementById('formIncidente').reset(); // Limpia los campos
-                cargarIncidentes(); // Refresca automáticamente la lista de abajo
+                document.getElementById('formIncidente').reset();
+                cargarIncidentes();
             })
             .catch(error => {
                 document.getElementById('mensaje-alta').innerHTML = 
                     '<span class="error">Error al registrar: ' + error.message + '</span>';
+            });
+        });
+
+        // 3. Manejar la actualización de estado (PATCH)
+        document.getElementById('formCambiarEstado').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('incidenteId').value;
+            const payload = {
+                estado: document.getElementById('nuevoEstado').value
+            };
+
+            fetch(`${API_URL}/${id}/estado`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(err => { throw new Error(err.error || 'Error al cambiar estado'); });
+                }
+            })
+            .then(data => {
+                document.getElementById('mensaje-estado').innerHTML = 
+                    '<span class="success">¡Estado actualizado con éxito para el incidente ID: ' + data.id + '!</span>';
+                cargarIncidentes();
+            })
+            .catch(error => {
+                document.getElementById('mensaje-estado').innerHTML = 
+                    '<span class="error">Error: ' + error.message + '</span>';
             });
         });
 
