@@ -1,3 +1,4 @@
+
 package tuti.daos.entidades;
 
 import jakarta.persistence.*;
@@ -58,4 +59,9 @@ public class Incidente extends RepresentationModel<Incidente> {
     public void setPrioridad(PrioridadIncidente prioridad) { this.prioridad = prioridad; }
     public EstadoIncidente getEstado() { return estado; }
     public void setEstado(EstadoIncidente estado) { this.estado = estado; }
+
+
+
+
+
 }

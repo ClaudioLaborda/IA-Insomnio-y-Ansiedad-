@@ -32,69 +32,20 @@ public class InformeResolucion {
     @Column(columnDefinition = "TEXT")
     private String observaciones;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Incidente getIncidente() {
-		return incidente;
-	}
-
-	public void setIncidente(Incidente incidente) {
-		this.incidente = incidente;
-	}
-
-	public String getDescripcionTrabajo() {
-		return descripcionTrabajo;
-	}
-
-	public void setDescripcionTrabajo(String descripcionTrabajo) {
-		this.descripcionTrabajo = descripcionTrabajo;
-	}
-
-	public LocalDateTime getFechaHoraResolucion() {
-		return fechaHoraResolucion;
-	}
-
-	public void setFechaHoraResolucion(LocalDateTime fechaHoraResolucion) {
-		this.fechaHoraResolucion = fechaHoraResolucion;
-	}
-
-	public BigDecimal getCosto() {
-		return costo;
-	}
-
-	public void setCosto(BigDecimal costo) {
-		this.costo = costo;
-	}
-
-	public String getProveedor() {
-		return proveedor;
-	}
-
-	public void setProveedor(String proveedor) {
-		this.proveedor = proveedor;
-	}
-
-	public String getResponsableTecnico() {
-		return responsableTecnico;
-	}
-
-	public void setResponsableTecnico(String responsableTecnico) {
-		this.responsableTecnico = responsableTecnico;
-	}
-
-	public String getObservaciones() {
-		return observaciones;
-	}
-
-	public void setObservaciones(String observaciones) {
-		this.observaciones = observaciones;
-	}
-
-    // TODO: Clic derecho > Source > Generate Getters and Setters para todos los atributos
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Incidente getIncidente() { return incidente; }
+    public void setIncidente(Incidente incidente) { this.incidente = incidente; }
+    public String getDescripcionTrabajo() { return descripcionTrabajo; }
+    public void setDescripcionTrabajo(String descripcionTrabajo) { this.descripcionTrabajo = descripcionTrabajo; }
+    public LocalDateTime getFechaHoraResolucion() { return fechaHoraResolucion; }
+    public void setFechaHoraResolucion(LocalDateTime fechaHoraResolucion) { this.fechaHoraResolucion = fechaHoraResolucion; }
+    public BigDecimal getCosto() { return costo; }
+    public void setCosto(BigDecimal costo) { this.costo = costo; }
+    public String getProveedor() { return proveedor; }
+    public void setProveedor(String proveedor) { this.proveedor = proveedor; }
+    public String getResponsableTecnico() { return responsableTecnico; }
+    public void setResponsableTecnico(String responsableTecnico) { this.responsableTecnico = responsableTecnico; }
+    public String getObservaciones() { return observaciones; }
+    public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
 }

@@ -1,3 +1,4 @@
+
 package tuti.daos.accesoDatos;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,7 @@ public interface IncidenteRepository extends JpaRepository<Incidente, Long> {
             @Param("categoria") Incidente.CategoriaIncidente categoria,
             @Param("prioridad") Incidente.PrioridadIncidente prioridad
     );
+
+
+
 }

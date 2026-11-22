@@ -19,20 +19,32 @@ public class InformeResolucionController {
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<InformeResolucion>> resolverIncidente(
-            @RequestBody InformeResolucionRequest request) { 
-        
-        InformeResolucion informe = service.registrarResolucion(request.getIncidenteId(), request.toEntity());
-        
-        EntityModel<InformeResolucion> resource = EntityModel.of(informe);
-        resource.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass())
-                .consultarInforme(informe.getId())).withSelfRel());
-                
-        return ResponseEntity.status(HttpStatus.CREATED).body(resource); 
+    public ResponseEntity<?> resolverIncidente(@RequestBody InformeResolucionRequest request) { 
+        try {
+            InformeResolucion informe = service.registrarResolucion(request.getIncidenteId(), request.toEntity());
+            
+            EntityModel<InformeResolucion> resource = EntityModel.of(informe);
+            resource.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass())
+                    .consultarInforme(informe.getId())).withSelfRel());
+                    
+            return ResponseEntity.status(HttpStatus.CREATED).body(resource); 
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<InformeResolucion>> consultarInforme(@PathVariable Long id) {
-        return null; // A implementar en el futuro
+        InformeResolucion informe = service.buscarPorId(id);
+        if (informe == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        EntityModel<InformeResolucion> resource = EntityModel.of(informe);
+        resource.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass())
+                .consultarInforme(informe.getId())).withSelfRel());
+        return ResponseEntity.ok(resource);
     }
 }
