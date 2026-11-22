@@ -51,6 +51,7 @@ public class IncidenteService {
         validarTransicion(estadoActual, nuevoEstado);
 
         incidente.setEstado(nuevoEstado);
+
         return incidenteRepository.save(incidente);
     }
 
@@ -93,10 +94,10 @@ public class IncidenteService {
         }
 
         boolean valido = switch (actual) {
-            case ABIERTO -> nuevo == Incidente.EstadoIncidente.EN_PROCESO || nuevo == Incidente.EstadoIncidente.RESUELTO || nuevo == Incidente.EstadoIncidente.CANCELADO;
+            case ABIERTO -> nuevo == Incidente.EstadoIncidente.EN_PROCESO || nuevo == Incidente.EstadoIncidente.CANCELADO;
             case EN_PROCESO -> nuevo == Incidente.EstadoIncidente.RESUELTO || nuevo == Incidente.EstadoIncidente.CANCELADO;
             case RESUELTO -> nuevo == Incidente.EstadoIncidente.REABIERTO;
-            case REABIERTO -> nuevo == Incidente.EstadoIncidente.EN_PROCESO || nuevo == Incidente.EstadoIncidente.RESUELTO;
+            case REABIERTO -> nuevo == Incidente.EstadoIncidente.EN_PROCESO;
             default -> false;
         };
 

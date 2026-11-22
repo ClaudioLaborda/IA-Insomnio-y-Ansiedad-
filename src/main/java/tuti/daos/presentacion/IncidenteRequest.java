@@ -1,31 +1,32 @@
 package tuti.daos.presentacion;
 
-public class IncidenteRequest {
 
-    private Long contratoId;
-    private String titulo;
-    private String descripcion;
-    private String categoria;
-    private String prioridad;
-    private String estado;
+ public class IncidenteRequest {
 
-    public IncidenteRequest() {}
+        private Long contratoId;
+        private String titulo;
+        private String descripcion;
+        private String categoria;
+        private String prioridad;
+        private String estado;
 
-    public Long getContratoId() { return contratoId; }
-    public void setContratoId(Long contratoId) { this.contratoId = contratoId; }
+        public IncidenteRequest() {}
 
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
+        public Long getContratoId() { return contratoId; }
+        public void setContratoId(Long contratoId) { this.contratoId = contratoId; }
 
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+        public String getTitulo() { return titulo; }
+        public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+        public String getDescripcion() { return descripcion; }
+        public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public String getPrioridad() { return prioridad; }
-    public void setPrioridad(String prioridad) { this.prioridad = prioridad; }
+        public String getCategoria() { return categoria; }
+        public void setCategoria(String categoria) { this.categoria = categoria; }
 
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-}
+        public String getPrioridad() { return prioridad; }
+        public void setPrioridad(String prioridad) { this.prioridad = prioridad; }
+
+        public String getEstado() { return estado; }
+        public void setEstado(String estado) { this.estado = estado; }
+    }
