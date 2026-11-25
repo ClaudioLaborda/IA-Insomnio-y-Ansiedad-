@@ -127,6 +127,26 @@ public class FacturaServiceImpl implements FacturaService {
         Factura actualizada = facturaRepository.save(factura);
         return mapearADto(actualizada);
     }
+    
+    
+    // metodo de Nico
+    
+    @Override
+    public void marcarComoPagada(Long id) {
+        Factura factura = facturaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Factura no encontrada"));
+
+        actualizarEstadoDinamicoIfNeeded(factura);
+
+        if (factura.getEstado() != EstadoFactura.PENDIENTE && factura.getEstado() != EstadoFactura.VENCIDA) {
+            throw new IllegalStateException("Solo se puede pagar una factura pendiente o vencida.");
+        }
+
+        factura.setEstado(EstadoFactura.PAGADA);
+        facturaRepository.save(factura);
+    }
+    
+    // ----- ///
 
     // --- Métodos Privados Auxiliares ---
 
