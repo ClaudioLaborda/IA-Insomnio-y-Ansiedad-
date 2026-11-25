@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import tuti.daos.exception.FacturaExcepcion;
+import tuti.daos.exception.Excepcion;
 
 @RestControllerAdvice
 public class ExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(FacturaExcepcion.class)
-    public ResponseEntity<ErrorAtributo> manejarExcepcion(HttpServletRequest request, FacturaExcepcion e) {
+    @org.springframework.web.bind.annotation.ExceptionHandler(Excepcion.class)
+    public ResponseEntity<ErrorAtributo> manejarExcepcion(HttpServletRequest request, Excepcion e) {
         return ResponseEntity
                 .status(e.getStatusCode())
                 .body(new ErrorAtributo(e.getAtributo(), e.getMensaje()));
