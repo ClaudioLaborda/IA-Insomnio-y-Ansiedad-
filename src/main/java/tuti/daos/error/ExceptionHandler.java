@@ -1,6 +1,8 @@
 package tuti.daos.error;
 
 import java.util.List;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import tuti.daos.excepciones.Excepcion;
 
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(Excepcion.class)

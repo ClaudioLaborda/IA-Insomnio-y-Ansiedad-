@@ -39,11 +39,11 @@ public class InformeResolucionService {
                         HttpStatus.NOT_FOUND.value()
                 ));
 
-        String estadoActual = incidente.getEstado();
-        if (!"En proceso".equalsIgnoreCase(estadoActual)) {
+        Incidente.EstadoIncidente estadoActual = incidente.getEstado();
+        if (estadoActual != Incidente.EstadoIncidente.EN_PROCESO) {
             throw new Excepcion(
                     "incidenteId",
-                    "No se puede resolver el incidente porque su estado actual es '" + estadoActual + "' (debe estar 'En proceso').",
+                    "No se puede resolver el incidente porque su estado actual es '" + estadoActual + "' (debe estar 'EN_PROCESO').",
                     HttpStatus.CONFLICT.value()
             );
         }
@@ -52,14 +52,14 @@ public class InformeResolucionService {
         LocalDateTime fechaResolucion = LocalDateTime.now();
 
         // 1. Actualizar estado del incidente
-        incidente.setEstado("Resuelto");
+        incidente.setEstado(Incidente.EstadoIncidente.RESUELTO);
         incidenteRepo.save(incidente);
 
         // 2. Registrar transición en el historial de estados
         HistorialEstadoIncidente historial = new HistorialEstadoIncidente();
         historial.setIncidente(incidente);
-        historial.setEstadoAnterior(estadoActual);
-        historial.setEstadoNuevo("Resuelto");
+        historial.setEstadoAnterior(estadoActual != null ? estadoActual.name() : null);
+        historial.setEstadoNuevo(Incidente.EstadoIncidente.RESUELTO.name());
         historial.setFechaHora(fechaResolucion);
         historialRepo.save(historial);
 
