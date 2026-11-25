@@ -1,6 +1,7 @@
 
 package tuti.daos.servicios;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -41,13 +42,13 @@ public class FacturaServiceImpl implements FacturaService {
         if (contrato.getEstado() != EstadoContrato.ACTIVO) {
             throw new IllegalStateException("El contrato no se encuentra activo para poder facturar.");
         }
-
+ 
         // 2. Validar que el período tenga al menos un día en la vigencia del contrato
         validarVigenciaPeriodo(contrato, request.getPeriodo());
-
+ 
         // 3. Determinar si es Facturación Mensual o Adicional
-        boolean esFacturacionMensual = (request.getImporte() == null);
-
+        boolean esFacturacionMensual = (request.getImporte() == null) || request.getImporte().compareTo(BigDecimal.ZERO)== 0;
+ 
         if (esFacturacionMensual) {
             boolean existeMensualActiva = facturaRepository.existsByContratoIdAndPeriodoFacturadoAndEstadoNot(
                     request.getContratoId(), request.getPeriodo(), EstadoFactura.ANULADA
@@ -58,23 +59,23 @@ public class FacturaServiceImpl implements FacturaService {
             }
             
             request.setImporte(contrato.getImporteMensual());
-            if (request.getConcepto() == null || request.getConcepto().isBlank()) {
+            if (request.getConcepto() == null || request.getConcepto().isBlank()|| "string".equalsIgnoreCase(request.getConcepto().trim()) ) {
                 request.setConcepto("Alquiler correspondiente al período " + request.getPeriodo());
             }
         }
-
+ 
         // 4. Calcular o asignar Fecha de Emisión
         LocalDate fechaEmision = request.getFechaEmision() != null ? request.getFechaEmision() : LocalDate.now();
-
+ 
         // 5. Calcular o asignar Fecha de Vencimiento
-        LocalDate fechaVencimiento = request.getFechaVencimiento() != null 
-                ? request.getFechaVencimiento() 
+        LocalDate fechaVencimiento = request.getFechaVencimiento() != null
+                ? request.getFechaVencimiento()
                 : calcularFechaVencimiento(request.getPeriodo(), contrato.getDiaVencimientoMensual());
-
+ 
         if (fechaEmision.isAfter(fechaVencimiento)) {
             throw new IllegalArgumentException("La fecha de emisión no puede ser posterior a la fecha de vencimiento.");
         }
-
+ 
         // 6. Construir y persistir la entidad
         Factura factura = new Factura();
         factura.setContratoId(request.getContratoId());
@@ -84,7 +85,7 @@ public class FacturaServiceImpl implements FacturaService {
         factura.setFechaVencimiento(fechaVencimiento);
         factura.setImporte(request.getImporte());
         factura.setEstado(EstadoFactura.PENDIENTE);
-
+ 
         Factura guardada = facturaRepository.save(factura);
         return mapearADto(guardada);
     }
