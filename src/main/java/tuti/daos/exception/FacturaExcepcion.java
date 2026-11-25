@@ -1,6 +1,6 @@
 package tuti.daos.exception;
 
-public class Excepcion extends RuntimeException{
+public class FacturaExcepcion extends RuntimeException{
 
 	
 	/*
@@ -12,12 +12,12 @@ public class Excepcion extends RuntimeException{
 	
 	private int statusCode;
 
-	public Excepcion() {
+	public FacturaExcepcion() {
 		super();
 		
 	}
 
-	public Excepcion(String atributo,String mensaje,int statusCode) {
+	public FacturaExcepcion(String atributo,String mensaje,int statusCode) {
 		super(mensaje);
 		this.mensaje = mensaje;
 		this.atributo = atributo;
