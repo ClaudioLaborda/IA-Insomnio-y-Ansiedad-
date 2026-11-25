@@ -13,21 +13,20 @@ public class ContratoDto {
     private BigDecimal importeMensual;
     private int diaVencimientoMensual;
     private boolean activo;
-    private boolean eliminadoLogicamente;
 
     // Constructor vacío
     public ContratoDto() {
     }
 
     // Constructor con parámetros principales
-    public ContratoDto(Long id, LocalDate fechaInicio, int duracionMeses, BigDecimal importeMensual, int diaVencimientoMensual, boolean activo, boolean eliminadoLogicamente) {
+    public ContratoDto(Long id, LocalDate fechaInicio, int duracionMeses, BigDecimal importeMensual, int diaVencimientoMensual, boolean activo) {
         this.id = id;
         this.fechaInicio = fechaInicio;
         this.duracionMeses = duracionMeses;
         this.importeMensual = importeMensual;
         this.diaVencimientoMensual = diaVencimientoMensual;
         this.activo = activo;
-        this.eliminadoLogicamente = eliminadoLogicamente;
+        
     }
 
     // Getters y Setters
@@ -79,11 +78,5 @@ public class ContratoDto {
         this.activo = activo;
     }
 
-    public boolean isEliminadoLogicamente() {
-        return eliminadoLogicamente;
-    }
-
-    public void setEliminadoLogicamente(boolean eliminadoLogicamente) {
-        this.eliminadoLogicamente = eliminadoLogicamente;
-    }
+   
 }

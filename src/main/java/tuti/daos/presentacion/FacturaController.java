@@ -1,10 +1,10 @@
-
 package tuti.daos.presentacion;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,7 +27,8 @@ import tuti.daos.entidades.EstadoFactura;
 import tuti.daos.servicios.FacturaService;
 
 @RestController
-@RequestMapping("/facturas")
+
+@RequestMapping(value = "/facturas", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Facturas", description = "Gestión de facturas y pagos de alquileres")
 public class FacturaController {
 

@@ -1,6 +1,7 @@
 
 package tuti.daos.servicios;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -46,7 +47,7 @@ public class FacturaServiceImpl implements FacturaService {
         validarVigenciaPeriodo(contrato, request.getPeriodo());
 
         // 3. Determinar si es Facturación Mensual o Adicional
-        boolean esFacturacionMensual = (request.getImporte() == null);
+        boolean esFacturacionMensual = (request.getImporte() == null) || request.getImporte().compareTo(BigDecimal.ZERO)== 0;
 
         if (esFacturacionMensual) {
             boolean existeMensualActiva = facturaRepository.existsByContratoIdAndPeriodoFacturadoAndEstadoNot(
@@ -58,7 +59,7 @@ public class FacturaServiceImpl implements FacturaService {
             }
             
             request.setImporte(contrato.getImporteMensual());
-            if (request.getConcepto() == null || request.getConcepto().isBlank()) {
+            if (request.getConcepto() == null || request.getConcepto().isBlank()|| "string".equalsIgnoreCase(request.getConcepto().trim()) ) {
                 request.setConcepto("Alquiler correspondiente al período " + request.getPeriodo());
             }
         }

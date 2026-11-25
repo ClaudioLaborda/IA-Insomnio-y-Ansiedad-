@@ -12,13 +12,15 @@ import tuti.daos.entidades.Factura;
 
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura, Long> {
-
+	
+	
     // Método para validar si ya existe una factura mensual activa para el contrato y período
     boolean existsByContratoIdAndPeriodoFacturadoAndEstadoNot(
             Long contratoId, 
             String periodoFacturado, 
             EstadoFactura estado
     );
+
 
     // Consulta personalizada para el filtrado flexible (contrato, período o estado)
     @Query("SELECT f FROM Factura f WHERE " +

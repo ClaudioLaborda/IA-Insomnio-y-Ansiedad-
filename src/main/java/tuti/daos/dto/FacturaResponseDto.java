@@ -68,7 +68,7 @@ public class FacturaResponseDto extends RepresentationModel<FacturaResponseDto> 
 	}
     
     
-    // Getters y Setters
+   
     
     
 }
