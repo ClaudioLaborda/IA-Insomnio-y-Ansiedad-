@@ -1,14 +1,26 @@
 package tuti.daos.presentacion;
 
 import java.math.BigDecimal;
+import jakarta.validation.constraints.*;
 import tuti.daos.entidades.InformeResolucion;
 
 public class InformeResolucionRequest {
-    private Long incidenteId; 
+
+    @NotNull(message = "El identificador del incidente es obligatorio.")
+    private Long incidenteId;
+
+    @NotBlank(message = "La descripción del trabajo realizado es obligatoria.")
     private String descripcionTrabajo;
+
+    @NotNull(message = "El costo es obligatorio (informar 0 si no corresponde).")
+    @DecimalMin(value = "0.0", inclusive = true, message = "El costo debe ser mayor o igual a cero.")
     private BigDecimal costo;
+
     private String proveedor;
+
+    @NotBlank(message = "El responsable o técnico es obligatorio.")
     private String responsableTecnico;
+
     private String observaciones;
 
     public InformeResolucion toEntity() {

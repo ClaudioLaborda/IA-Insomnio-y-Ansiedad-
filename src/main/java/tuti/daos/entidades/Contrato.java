@@ -1,80 +1,61 @@
 package tuti.daos.entidades;
 
-
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
-
 @Entity
-@Table(name = "contratos")
+@Table(name = "contrato")
 public class Contrato {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Relaciones de tu modelo
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "propiedad_id", nullable = false)
+    @JoinColumn(name = "inquilino_id")
+    private Persona inquilino;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "propietario_id")
+    private Persona propietario;
+
+    // Campos agregados por Lucas (sin nullable = false para no romper filas existentes)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "propiedad_id")
     private Propiedad propiedad;
 
-    @Column(name = "inquilino_nombre", nullable = false)
-    private String inquilinoNombre; 
-    
+    @Column(name = "inquilino_nombre")
+    private String inquilinoNombre;
+
     @Column(name = "fecha_inicio", nullable = false)
     private LocalDate fechaInicio;
 
     @Column(name = "duracion_meses", nullable = false)
-    private int duracionMeses; 
+    private Integer duracionMeses;
 
     @Column(name = "importe_mensual", nullable = false, precision = 12, scale = 2)
-    private BigDecimal importeMensual; 
+    private BigDecimal importeMensual;
 
     @Column(name = "dia_vencimiento_mensual", nullable = false)
-    private int diaVencimientoMensual; 
-    
+    private Integer diaVencimientoMensual;
+
     @Column(nullable = false)
-    private boolean activo = true;
+    private Boolean activo = true;
 
-    
+    @Column(name = "eliminado_logicamente", nullable = false)
+    private Boolean eliminadoLogicamente = false;
 
-    // 1. Agrega este atributo junto a los demás campos de la clase
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    
-    private EstadoContrato estado = EstadoContrato.ACTIVO; // o el valor por defecto que prefieras
+    @Column(name = "estado")
+    private EstadoContrato estado = EstadoContrato.ACTIVO;
 
-    // 2. Agrega el getter y setter correspondientes
-    public EstadoContrato getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoContrato estado) {
-        this.estado = estado;
-    }
-
-   
-    
-    //Constructores
-    
- // Constructor vacío (Obligatorio para JPA/Hibernate)
+    // Constructores
     public Contrato() {
         super();
     }
 
-    // Tu constructor con parámetros existente
     public Contrato(Long id, Propiedad propiedad, String inquilinoNombre, LocalDate fechaInicio, int duracionMeses,
             BigDecimal importeMensual, int diaVencimientoMensual, boolean activo) {
         super();
@@ -86,77 +67,106 @@ public class Contrato {
         this.importeMensual = importeMensual;
         this.diaVencimientoMensual = diaVencimientoMensual;
         this.activo = activo;
-    
     }
-    
-    // Getters, Setters
-    
-    
+
+    // Getters y Setters (combinados para ambos módulos)
     public Long getId() {
-		return id;
-	}	
+        return id;
+    }
 
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Propiedad getPropiedad() {
-		return propiedad;
-	}
+    public Persona getInquilino() {
+        return inquilino;
+    }
 
-	public void setPropiedad(Propiedad propiedad) {
-		this.propiedad = propiedad;
-	}
+    public void setInquilino(Persona inquilino) {
+        this.inquilino = inquilino;
+    }
 
-	public String getInquilinoNombre() {
-		return inquilinoNombre;
-	}
+    public Persona getPropietario() {
+        return propietario;
+    }
 
-	public void setInquilinoNombre(String inquilinoNombre) {
-		this.inquilinoNombre = inquilinoNombre;
-	}
+    public void setPropietario(Persona propietario) {
+        this.propietario = propietario;
+    }
 
-	public LocalDate getFechaInicio() {
-		return fechaInicio;
-	}
+    public Propiedad getPropiedad() {
+        return propiedad;
+    }
 
-	public void setFechaInicio(LocalDate fechaInicio) {
-		this.fechaInicio = fechaInicio;
-	}
+    public void setPropiedad(Propiedad propiedad) {
+        this.propiedad = propiedad;
+    }
 
-	public int getDuracionMeses() {
-		return duracionMeses;
-	}
+    public String getInquilinoNombre() {
+        return inquilinoNombre;
+    }
 
-	public void setDuracionMeses(int duracionMeses) {
-		this.duracionMeses = duracionMeses;
-	}
+    public void setInquilinoNombre(String inquilinoNombre) {
+        this.inquilinoNombre = inquilinoNombre;
+    }
 
-	public BigDecimal getImporteMensual() {
-		return importeMensual;
-	}
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
 
-	public void setImporteMensual(BigDecimal importeMensual) {
-		this.importeMensual = importeMensual;
-	}
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
 
-	public int getDiaVencimientoMensual() {
-		return diaVencimientoMensual;
-	}
+    public Integer getDuracionMeses() {
+        return duracionMeses;
+    }
 
-	public void setDiaVencimientoMensual(int diaVencimientoMensual) {
-		this.diaVencimientoMensual = diaVencimientoMensual;
-	}
+    public void setDuracionMeses(Integer duracionMeses) {
+        this.duracionMeses = duracionMeses;
+    }
 
-	public boolean isActivo() {
-		return activo;
-	}
+    public BigDecimal getImporteMensual() {
+        return importeMensual;
+    }
 
-	public void setActivo(boolean activo) {
-		this.activo = activo;
-	}
+    public void setImporteMensual(BigDecimal importeMensual) {
+        this.importeMensual = importeMensual;
+    }
 
-	
-    
+    public Integer getDiaVencimientoMensual() {
+        return diaVencimientoMensual;
+    }
+
+    public void setDiaVencimientoMensual(Integer diaVencimientoMensual) {
+        this.diaVencimientoMensual = diaVencimientoMensual;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public boolean isActivo() {
+        return Boolean.TRUE.equals(activo);
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
+    public Boolean getEliminadoLogicamente() {
+        return eliminadoLogicamente;
+    }
+
+    public void setEliminadoLogicamente(Boolean eliminadoLogicamente) {
+        this.eliminadoLogicamente = eliminadoLogicamente;
+    }
+
+    public EstadoContrato getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoContrato estado) {
+        this.estado = estado;
+    }
 }
