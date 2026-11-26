@@ -9,9 +9,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import tuti.daos.excepciones.Excepcion;
-
+import org.springframework.validation.FieldError;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -38,8 +39,8 @@ public class ExceptionHandler {
     }
 
     //<---- ---->
-     @org.springframework.web.bind.annotation.ExceptionHandler(FacturaExcepcion.class)
-    public ResponseEntity<ErrorAtributo> manejarExcepcion(HttpServletRequest request, FacturaExcepcion e) {
+     @org.springframework.web.bind.annotation.ExceptionHandler(Excepcion.class)
+    public ResponseEntity<ErrorAtributo> manejarExcepcion(HttpServletRequest request, Excepcion e) {
         return ResponseEntity
                 .status(e.getStatusCode())
                 .body(new ErrorAtributo(e.getAtributo(), e.getMensaje()));
