@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "contrato")
+@Table(name = "contratos")
 public class Contrato {
 
     @Id
