@@ -13,6 +13,7 @@ import tuti.daos.entidades.HistorialEstadoIncidente;
 import tuti.daos.entidades.Incidente;
 import tuti.daos.entidades.InformeResolucion;
 import tuti.daos.excepciones.Excepcion;
+import tuti.daos.presentacion.InformeResolucionResponse;
 
 @Service
 public class InformeResolucionService {
@@ -84,4 +85,21 @@ public class InformeResolucionService {
         }
         return informeRepo.findAll();
     }
+    
+    
+    
+ // Pasa la entidad a la respuesta. getIncidente().getId() no necesita cargar el incidente completo
+    private InformeResolucionResponse toResponse(InformeResolucion i) {
+        InformeResolucionResponse r = new InformeResolucionResponse();
+        r.setId(i.getId());
+        r.setIncidenteId(i.getIncidente().getId());
+        r.setFechaHoraResolucion(i.getFechaHoraResolucion());
+        r.setDescripcionTrabajo(i.getDescripcionTrabajo());
+        r.setCosto(i.getCosto());
+        r.setProveedor(i.getProveedor());
+        r.setResponsableTecnico(i.getResponsableTecnico());
+        r.setObservaciones(i.getObservaciones());
+        return r;
+    }
+    
 }
